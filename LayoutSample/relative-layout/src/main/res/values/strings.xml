@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Relative Layout Sample</string>
+    <string name="reminder">Reminder</string>
+    <string name="done">Done</string>
+
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="android_1_0_release">1.0</string>
+    <string name="android_1_1_release">1.1</string>
+    <string name="android_1_5_release">1.5</string>
+    <string name="android_1_6_release">1.6</string>
+    <string name="android_2_0_release">2.0</string>
+    <string name="android_2_1_release">2.1</string>
+    <string name="android_2_2_release">2.2</string>
+    <string name="android_2_3_release">2.3</string>
+    <string name="android_2_3_3_release">2.3.3</string>
+    <string name="android_3_0_release">3.0</string>
+    <string name="android_3_1_release">3.1</string>
+    <string name="android_3_2_release">3.2</string>
+    <string name="android_4_0_release">4.0</string>
+    <string name="android_4_0_3_release">4.0.3</string>
+    <string name="android_4_1_release">4.1</string>
+    <string name="android_4_2_release">4.2</string>
+    <string name="android_4_3_release">4.3</string>
+    <string name="android_4_4_release">4.4</string>
+</resources>

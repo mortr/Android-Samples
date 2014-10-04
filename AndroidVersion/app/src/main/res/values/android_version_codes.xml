@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="android_1_0_version_code">1</integer>
+    <integer name="android_1_1_version_code">2</integer>
+    <integer name="android_1_5_version_code">3</integer>
+    <integer name="android_1_6_version_code">4</integer>
+    <integer name="android_2_0_version_code">5</integer>
+    <integer name="android_2_1_version_code">7</integer>
+    <integer name="android_2_2_version_code">8</integer>
+    <integer name="android_2_3_version_code">9</integer>
+    <integer name="android_2_3_3_version_code">10</integer>
+    <integer name="android_3_0_version_code">11</integer>
+    <integer name="android_3_1_version_code">12</integer>
+    <integer name="android_3_2_version_code">13</integer>
+    <integer name="android_4_0_version_code">14</integer>
+    <integer name="android_4_0_3_version_code">15</integer>
+    <integer name="android_4_1_version_code">16</integer>
+    <integer name="android_4_2_version_code">17</integer>
+    <integer name="android_4_3_version_code">18</integer>
+    <integer name="android_4_4_version_code">19</integer>
+</resources>

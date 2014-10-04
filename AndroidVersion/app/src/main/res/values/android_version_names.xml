@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="android_1_0_version_name">Alpha</string>
+    <string name="android_1_1_version_name">Beta</string>
+    <string name="android_1_5_version_name">Cupcake</string>
+    <string name="android_1_6_version_name">Donut</string>
+    <string name="android_2_0_version_name">Eclair</string>
+    <string name="android_2_1_version_name">Eclair MR1</string>
+    <string name="android_2_2_version_name">Froyo</string>
+    <string name="android_2_3_version_name">Gingerbread</string>
+    <string name="android_2_3_3_version_name">Gingerbread</string>
+    <string name="android_3_0_version_name">Honeycomb</string>
+    <string name="android_3_1_version_name">Honeycomb MR1</string>
+    <string name="android_3_2_version_name">Honeycomb MR2</string>
+    <string name="android_4_0_version_name">Ice Cream Sandwich</string>
+    <string name="android_4_0_3_version_name">Ice Cream Sandwich MR1</string>
+    <string name="android_4_1_version_name">Jelly Bean</string>
+    <string name="android_4_2_version_name">Jelly Bean MR2</string>
+    <string name="android_4_3_version_name">Jelly Bean MR3</string>
+    <string name="android_4_4_version_name">KitKat</string>
+</resources>
