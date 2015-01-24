@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Activity Lifecycle Sample</string>
+    <string name="menu_clear_log">Clear</string>
+</resources>
