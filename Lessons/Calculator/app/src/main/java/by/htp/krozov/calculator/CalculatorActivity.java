@@ -16,10 +16,10 @@ import android.widget.Toast;
  */
 public class CalculatorActivity extends Activity {
 
-    Computable mComputable;
     TextView mResultView;
     TextView mOperand1View;
     TextView mOperand2View;
+    RadioGroup mOperatorsView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,9 +30,7 @@ public class CalculatorActivity extends Activity {
         mOperand1View = (TextView) findViewById(R.id.operand1);
         mOperand2View = (TextView) findViewById(R.id.operand2);
 
-        RadioGroup operatorsView = (RadioGroup) findViewById(R.id.operators);
-        mComputable = getOperatorById(operatorsView.getCheckedRadioButtonId());
-        operatorsView.setOnCheckedChangeListener(new OperatorCheckedChangeListener());
+        mOperatorsView = (RadioGroup) findViewById(R.id.operators);
         findViewById(R.id.compute).setOnClickListener(new OnComputeClickListener());
     }
 
@@ -40,14 +38,18 @@ public class CalculatorActivity extends Activity {
         @Override
         public void onClick(View v) {
             try {
+                Computable operator = getOperatorById();
+                if (operator == null) {
+
+                }
                 mResultView.setText(
-                        getString(R.string.result_format, mComputable.compute(
+                        getString(R.string.result_format, operator.compute(
                                 getDouble(mOperand1View), getDouble(mOperand2View)
                         ))
                 );
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ViewAnimationUtils.createCircularReveal(mResultView,
-                            mResultView.getWidth(), mResultView.getHeight(),
+                            0, mResultView.getHeight() / 2,
                             0, Math.max(mResultView.getHeight(), mResultView.getWidth())
                     )
                             .setDuration(
@@ -72,15 +74,8 @@ public class CalculatorActivity extends Activity {
         }
     }
 
-    private class OperatorCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            mComputable = getOperatorById(checkedId);
-        }
-    }
-
-    private static Computable getOperatorById(int checkedId) {
-        switch (checkedId) {
+    private Computable getOperatorById() {
+        switch (mOperatorsView.getCheckedRadioButtonId()) {
             case 0:
                 return null;
 

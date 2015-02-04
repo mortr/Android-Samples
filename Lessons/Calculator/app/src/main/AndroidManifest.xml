@@ -10,7 +10,10 @@
         android:theme="@style/Theme.Calculator"
         >
 
-        <activity android:name=".CalculatorActivity">
+        <activity
+            android:name=".CalculatorActivity"
+            android:windowSoftInputMode="stateHidden"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
