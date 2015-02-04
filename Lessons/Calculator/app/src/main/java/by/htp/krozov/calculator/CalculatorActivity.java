@@ -43,13 +43,14 @@ public class CalculatorActivity extends Activity {
                 if (operator == null) {
                     Toast.makeText(CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT)
                             .show();
+                } else {
+                    String result = getString(
+                            R.string.result_format,
+                            operator.compute(getDouble(mOperand1View), getDouble(mOperand2View))
+                    );
+                    mResultView.setText(result);
+                    animateShow();
                 }
-                String result = getString(
-                        R.string.result_format,
-                        operator.compute(getDouble(mOperand1View), getDouble(mOperand2View))
-                );
-                mResultView.setText(result);
-                animateShow();
             } catch (IllegalArgumentException e) {
                 if (!TextUtils.isEmpty(mResultView.getText())) {
                     animateHide();
