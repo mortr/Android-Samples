@@ -5,4 +5,8 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Sample" parent="">
+        <item name="android:textSize">50sp</item>
+    </style>
+
 </resources>

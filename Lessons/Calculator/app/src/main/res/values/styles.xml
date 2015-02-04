@@ -1,0 +1,23 @@
+<resources>
+
+    <style name="Widget.Calculator" parent=""/>
+
+    <style name="Widget.Calculator.Operand">
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:hint">@string/operand_hint</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Widget.Calculator.Operator">
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="Widget.Calculator.Result">
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">?android:textAppearanceLarge</item>
+    </style>
+
+</resources>
