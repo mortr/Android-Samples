@@ -20,7 +20,7 @@ public enum Operator implements Computable {
     DIVISION(new Computable() {
         @Override
         public double compute(double operand1, double operand2) {
-            if (operand2 == 0) {
+            if (operand1 == 0 || operand2 == 0) {
                 throw new IllegalArgumentException();
             }
             return operand1 / operand2;
