@@ -1,5 +1,6 @@
 package by.htp.krozov.calculator;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,27 +41,65 @@ public class CalculatorActivity extends Activity {
             try {
                 Computable operator = getOperatorById();
                 if (operator == null) {
-
+                    Toast.makeText(CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT)
+                            .show();
                 }
                 mResultView.setText(
                         getString(R.string.result_format, operator.compute(
                                 getDouble(mOperand1View), getDouble(mOperand2View)
                         ))
                 );
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ViewAnimationUtils.createCircularReveal(mResultView,
-                            0, mResultView.getHeight() / 2,
-                            0, Math.max(mResultView.getHeight(), mResultView.getWidth())
-                    )
-                            .setDuration(
-                                    getResources().getInteger(android.R.integer.config_mediumAnimTime)
-                            )
-                            .start();
-                }
+                showResult();
             } catch (IllegalArgumentException e) {
+                hideResult();
                 Toast.makeText(
                         CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT
                 ).show();
+            }
+        }
+
+        private void showResult() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ViewAnimationUtils.createCircularReveal(mResultView,
+                        0, mResultView.getHeight() / 2,
+                        0, Math.max(mResultView.getHeight(), mResultView.getWidth())
+                )
+                        .setDuration(
+                                getResources().getInteger(android.R.integer.config_mediumAnimTime)
+                        )
+                        .start();
+            }
+        }
+
+        private void hideResult() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Animator animator = ViewAnimationUtils.createCircularReveal(mResultView,
+                        0, mResultView.getHeight() / 2,
+                        Math.max(mResultView.getHeight(), mResultView.getWidth()), 0
+                );
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mResultView.setText(null);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                animator.setDuration(
+                        getResources().getInteger(android.R.integer.config_mediumAnimTime)
+                ).start();
             }
         }
     }
