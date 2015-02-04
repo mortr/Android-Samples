@@ -1,6 +1,8 @@
 package by.htp.krozov.calculator;
 
 /**
+ * Интерфейс который сопоставляет 2 числам другое число.
+ *
  * @author Kirill Rozov
  * @since 04.02.15.
  */

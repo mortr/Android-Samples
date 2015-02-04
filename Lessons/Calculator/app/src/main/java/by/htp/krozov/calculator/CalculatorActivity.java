@@ -1,6 +1,7 @@
 package by.htp.krozov.calculator;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,9 +18,13 @@ import android.widget.Toast;
  */
 public class CalculatorActivity extends Activity {
 
+    // View для отображения результата
     TextView mResultView;
+    // View с первым операндом
     TextView mOperand1View;
+    // View со вторым операндом
     TextView mOperand2View;
+    // View с выбором оператора
     RadioGroup mOperatorsView;
 
     @Override
@@ -27,11 +32,13 @@ public class CalculatorActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculator);
 
+        // Инициализируем View с которыми вудем работать
         mResultView = (TextView) findViewById(R.id.result);
         mOperand1View = (TextView) findViewById(R.id.operand1);
         mOperand2View = (TextView) findViewById(R.id.operand2);
         mOperatorsView = (RadioGroup) findViewById(R.id.operators);
 
+        // Кнопке "Вычислить" задаётся слушатель
         findViewById(R.id.compute).setOnClickListener(new OnComputeClickListener());
     }
 
@@ -40,7 +47,7 @@ public class CalculatorActivity extends Activity {
         public void onClick(View v) {
             try {
                 Computable operator = getOperatorById();
-                if (operator == null) {
+                if (operator == null) { // Оператора не выбран
                     Toast.makeText(CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT)
                             .show();
                 } else {
@@ -52,6 +59,8 @@ public class CalculatorActivity extends Activity {
                     animateShow();
                 }
             } catch (IllegalArgumentException e) {
+                // Происходит в случае если введены недопустимые аргументы для вычислений, например
+                // пустая строка или недопустимый формат данных.
                 if (!TextUtils.isEmpty(mResultView.getText())) {
                     animateHide();
                 }
@@ -62,6 +71,7 @@ public class CalculatorActivity extends Activity {
         }
 
         private void animateShow() {
+            // Анимирование обновления View с Reveal эффектом
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ViewAnimationUtils.createCircularReveal(mResultView,
                         0, mResultView.getHeight() / 2,
@@ -75,29 +85,16 @@ public class CalculatorActivity extends Activity {
         }
 
         private void animateHide() {
+            // Анимирование сокрытия View с Reveal эффектом
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Animator animator = ViewAnimationUtils.createCircularReveal(mResultView,
                         0, mResultView.getHeight() / 2,
                         Math.max(mResultView.getHeight(), mResultView.getWidth()), 0
                 );
-                animator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
-
+                animator.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         mResultView.setText(null);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
                     }
                 });
                 animator.setDuration(
@@ -109,18 +106,33 @@ public class CalculatorActivity extends Activity {
         }
     }
 
+    /**
+     * Парсинг числа с плавающей точкой из TextView.
+     *
+     * @throws java.lang.IllegalArgumentException Происходит в случае если строка,
+     *                                            из которой партится число, имеет недопустимый формат.
+     */
     private static double getDouble(TextView textView) {
         CharSequence text = textView.getText();
         if (TextUtils.isEmpty(text)) {
             throw new IllegalArgumentException();
         } else {
-            return Double.parseDouble(text.toString());
+            try {
+                return Double.parseDouble(text.toString());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
     }
 
+    /**
+     * Метод для получения текущего выбранного оператора в списке.
+     *
+     * @return Текущий выбранный оператора.
+     */
     private Computable getOperatorById() {
         switch (mOperatorsView.getCheckedRadioButtonId()) {
-            case 0:
+            case View.NO_ID:
                 return null;
 
             case R.id.operator_sum:
