@@ -51,7 +51,9 @@ public class CalculatorActivity extends Activity {
                 );
                 showResult();
             } catch (IllegalArgumentException e) {
-                hideResult();
+                if (!TextUtils.isEmpty(mResultView.getText())) {
+                    hideResult();
+                }
                 Toast.makeText(
                         CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT
                 ).show();
