@@ -30,8 +30,8 @@ public class CalculatorActivity extends Activity {
         mResultView = (TextView) findViewById(R.id.result);
         mOperand1View = (TextView) findViewById(R.id.operand1);
         mOperand2View = (TextView) findViewById(R.id.operand2);
-
         mOperatorsView = (RadioGroup) findViewById(R.id.operators);
+
         findViewById(R.id.compute).setOnClickListener(new OnComputeClickListener());
     }
 
@@ -44,15 +44,15 @@ public class CalculatorActivity extends Activity {
                     Toast.makeText(CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT)
                             .show();
                 }
-                mResultView.setText(
-                        getString(R.string.result_format, operator.compute(
-                                getDouble(mOperand1View), getDouble(mOperand2View)
-                        ))
+                String result = getString(
+                        R.string.result_format,
+                        operator.compute(getDouble(mOperand1View), getDouble(mOperand2View))
                 );
-                showResult();
+                mResultView.setText(result);
+                animateShow();
             } catch (IllegalArgumentException e) {
                 if (!TextUtils.isEmpty(mResultView.getText())) {
-                    hideResult();
+                    animateHide();
                 }
                 Toast.makeText(
                         CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT
@@ -60,7 +60,7 @@ public class CalculatorActivity extends Activity {
             }
         }
 
-        private void showResult() {
+        private void animateShow() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ViewAnimationUtils.createCircularReveal(mResultView,
                         0, mResultView.getHeight() / 2,
@@ -73,7 +73,7 @@ public class CalculatorActivity extends Activity {
             }
         }
 
-        private void hideResult() {
+        private void animateHide() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Animator animator = ViewAnimationUtils.createCircularReveal(mResultView,
                         0, mResultView.getHeight() / 2,
@@ -102,16 +102,18 @@ public class CalculatorActivity extends Activity {
                 animator.setDuration(
                         getResources().getInteger(android.R.integer.config_mediumAnimTime)
                 ).start();
+            } else {
+                mResultView.setText(null);
             }
         }
     }
 
     private static double getDouble(TextView textView) {
         CharSequence text = textView.getText();
-        if (TextUtils.getTrimmedLength(text) > 0) {
-            return Double.parseDouble(text.toString());
-        } else {
+        if (TextUtils.isEmpty(text)) {
             throw new IllegalArgumentException();
+        } else {
+            return Double.parseDouble(text.toString());
         }
     }
 
