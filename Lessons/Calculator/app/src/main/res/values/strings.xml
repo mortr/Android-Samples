@@ -8,6 +8,7 @@
     <string name="compute">compute</string>
     <string name="result_format">Result: %.2f</string>
     <string name="operand_hint">Operand</string>
+    <string name="msg_illegal_operation">Choose operation</string>
     <string name="msg_illegal_operand">Illegal operands</string>
     <string name="msg_operator_not_select">Select operator</string>
 </resources>

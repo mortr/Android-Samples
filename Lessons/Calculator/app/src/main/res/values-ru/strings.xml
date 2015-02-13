@@ -10,4 +10,5 @@
     <string name="operand_hint">Операнд</string>
     <string name="msg_illegal_operand">Недопустимые операнды</string>
     <string name="msg_operator_not_select">Выберите операцию</string>
+    <string name="msg_illegal_operation">Выберите операцию</string>
 </resources>
