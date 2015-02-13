@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">LinkViewer</string>
+    <string name="link_hint">Link to open</string>
+    <string name="open">Open</string>
+    <string name="msg_empty_url">You must input url first</string>
+    <string name="msg_now_browsers">You system doesn\'t have any browser app</string>
+</resources>
