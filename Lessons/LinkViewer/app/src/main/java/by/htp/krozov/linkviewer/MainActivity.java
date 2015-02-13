@@ -57,6 +57,6 @@ public class MainActivity extends Activity {
 
     boolean canResolve(Intent intent) {
         List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, 0);
-        return resolveInfos != null || !resolveInfos.isEmpty();
+        return resolveInfos != null && !resolveInfos.isEmpty();
     }
 }
