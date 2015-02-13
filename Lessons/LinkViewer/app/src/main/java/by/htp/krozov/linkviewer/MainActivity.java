@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.protocol.HTTP;
+
 import java.util.List;
 
 
@@ -21,7 +23,7 @@ public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
 
-    public static final String SCHEME_HTTP = "http";
+    public static final String SCHEME_HTTP = "http://";
     private EditText mLinkView;
 
     @Override
@@ -60,9 +62,7 @@ public class MainActivity extends Activity {
         } else {
             Uri data = Uri.parse(url);
             if (TextUtils.isEmpty(data.getScheme())) {
-                Uri.Builder builder = data.buildUpon();
-                builder.scheme(SCHEME_HTTP);
-                data = builder.build();
+                data = Uri.parse(SCHEME_HTTP + url);
             }
 
             Intent intent = new Intent(Intent.ACTION_VIEW, data);
