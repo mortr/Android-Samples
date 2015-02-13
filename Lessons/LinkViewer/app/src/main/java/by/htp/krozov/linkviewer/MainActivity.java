@@ -6,6 +6,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,6 +15,8 @@ import java.util.List;
 
 
 public class MainActivity extends Activity {
+
+    private static final String TAG = "MainActivity";
 
     public static final String SCHEME_HTTP = "http";
 
@@ -40,6 +43,7 @@ public class MainActivity extends Activity {
 
                             Intent intent = new Intent(Intent.ACTION_VIEW, data);
                             if (canResolve(intent)) {
+                                Log.d(TAG, "Open link '" + data.toString() + "'.");
                                 startActivity(intent);
                             } else {
                                 Toast.makeText(MainActivity.this, R.string.msg_now_browsers, Toast.LENGTH_SHORT)
@@ -53,6 +57,6 @@ public class MainActivity extends Activity {
 
     boolean canResolve(Intent intent) {
         List<ResolveInfo> resolveInfos = getPackageManager().queryIntentActivities(intent, 0);
-        return resolveInfos == null || resolveInfos.isEmpty();
+        return resolveInfos != null || !resolveInfos.isEmpty();
     }
 }
