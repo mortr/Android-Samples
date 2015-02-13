@@ -14,8 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.protocol.HTTP;
-
 import java.util.List;
 
 
@@ -78,8 +76,9 @@ public class MainActivity extends Activity {
     }
 
     void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromInputMethod(mLinkView.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                .hideSoftInputFromInputMethod(
+                        mLinkView.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     boolean canResolve(Intent intent) {
