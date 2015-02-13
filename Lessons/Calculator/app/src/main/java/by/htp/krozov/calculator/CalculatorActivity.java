@@ -24,10 +24,13 @@ public class CalculatorActivity extends Activity {
 
     // View для отображения результата
     TextView mResultView;
+
     // View с первым операндом
     EditText mOperand1View;
+
     // View со вторым операндом
     EditText mOperand2View;
+
     // View с выбором оператора
     RadioGroup mOperatorsView;
 
@@ -44,70 +47,6 @@ public class CalculatorActivity extends Activity {
 
         // Кнопке "Вычислить" задаётся слушатель
         findViewById(R.id.compute).setOnClickListener(new OnComputeClickListener());
-    }
-
-    private class OnComputeClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            try {
-                Computable operator = getOperatorById();
-                if (operator == null) { // Оператора не выбран
-                    Toast.makeText(CalculatorActivity.this, R.string.msg_illegal_operation, Toast.LENGTH_SHORT)
-                            .show();
-                } else {
-                    String result = getString(
-                            R.string.result_format,
-                            operator.compute(getDouble(mOperand1View), getDouble(mOperand2View))
-                    );
-                    mResultView.setText(result);
-                    animateShow();
-                }
-            } catch (IllegalArgumentException e) {
-                // Происходит в случае если введены недопустимые аргументы для вычислений, например
-                // пустая строка или недопустимый формат данных.
-                if (!TextUtils.isEmpty(mResultView.getText())) {
-                    animateHide();
-                }
-                Toast.makeText(
-                        CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT
-                ).show();
-            }
-        }
-
-        private void animateShow() {
-            // Анимирование обновления View с Reveal эффектом
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ViewAnimationUtils.createCircularReveal(mResultView,
-                        0, mResultView.getHeight() / 2,
-                        0, Math.max(mResultView.getHeight(), mResultView.getWidth())
-                )
-                        .setDuration(
-                                getResources().getInteger(android.R.integer.config_mediumAnimTime)
-                        )
-                        .start();
-            }
-        }
-
-        private void animateHide() {
-            // Анимирование сокрытия View с Reveal эффектом
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Animator animator = ViewAnimationUtils.createCircularReveal(mResultView,
-                        0, mResultView.getHeight() / 2,
-                        Math.max(mResultView.getHeight(), mResultView.getWidth()), 0
-                );
-                animator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mResultView.setText(null);
-                    }
-                });
-                animator.setDuration(
-                        getResources().getInteger(android.R.integer.config_mediumAnimTime)
-                ).start();
-            } else {
-                mResultView.setText(null);
-            }
-        }
     }
 
     /**
@@ -159,12 +98,79 @@ public class CalculatorActivity extends Activity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        // Сохраняем текст результата
         outState.putCharSequence(STATE_RESULT, mResultView.getText());
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        // Восстанавливаем текст реузльтата
         mResultView.setText(savedInstanceState.getCharSequence(STATE_RESULT));
+    }
+
+
+    /**
+     * Слушатель нажатия на кнопку "Вычислить".
+     */
+    private class OnComputeClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            try {
+                Computable operator = getOperatorById();
+                if (operator == null) { // Оператора не выбран
+                    Toast.makeText(CalculatorActivity.this, R.string.msg_illegal_operation, Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    String result = getString(
+                            R.string.result_format,
+                            operator.compute(getDouble(mOperand1View), getDouble(mOperand2View))
+                    );
+                    mResultView.setText(result);
+                    animateShow();
+                }
+            } catch (IllegalArgumentException e) {
+                // Происходит в случае если введены недопустимые аргументы для вычислений, например
+                // пустая строка или недопустимый формат данных.
+                if (!TextUtils.isEmpty(mResultView.getText())) {
+                    animateHide();
+                }
+                Toast.makeText(
+                        CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT
+                ).show();
+            }
+        }
+
+        private void animateShow() {
+            // Анимирование обновления View с Reveal эффектом
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                int centerY = mResultView.getHeight() / 2;
+                int endRadius = Math.max(mResultView.getHeight(), mResultView.getWidth());
+                ViewAnimationUtils.createCircularReveal(mResultView, 0, centerY, 0, endRadius)
+                        .setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                        .start();
+            }
+        }
+
+        private void animateHide() {
+            // Анимирование сокрытия View с Reveal эффектом
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                int centerY = mResultView.getHeight() / 2;
+                int startRadius = Math.max(mResultView.getHeight(), mResultView.getWidth());
+                Animator animator =
+                        ViewAnimationUtils.createCircularReveal(mResultView, 0, centerY, startRadius, 0);
+                animator.addListener(
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mResultView.setText(null);
+                            }
+                        });
+                animator.setDuration(getResources().getInteger(android.R.integer.config_mediumAnimTime))
+                        .start();
+            } else {
+                mResultView.setText(null);
+            }
+        }
     }
 }
