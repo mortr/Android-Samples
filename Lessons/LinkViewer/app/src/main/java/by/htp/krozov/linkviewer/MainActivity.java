@@ -60,7 +60,9 @@ public class MainActivity extends Activity {
         } else {
             Uri data = Uri.parse(url);
             if (TextUtils.isEmpty(data.getScheme())) {
-                data = Uri.parse(SCHEME_HTTP + url);
+                Uri.Builder builder = data.buildUpon();
+                builder.scheme("http");
+                data = builder.build();
             }
 
             Intent intent = new Intent(Intent.ACTION_VIEW, data);

@@ -34,9 +34,18 @@ public class CalculatorActivity extends Activity {
     // View с выбором оператора
     RadioGroup mOperatorsView;
 
+    private OptDouble mResult;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_RESULT)) {
+            mResult = OptDouble.of(savedInstanceState.getDouble(STATE_RESULT));
+        } else {
+            mResult = OptDouble.of();
+        }
+
         setContentView(R.layout.activity_calculator);
 
         // Инициализируем View с которыми вудем работать
@@ -106,7 +115,9 @@ public class CalculatorActivity extends Activity {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         // Восстанавливаем текст реузльтата
-        mResultView.setText(savedInstanceState.getCharSequence(STATE_RESULT));
+        if (mResult != null && mResult.hasValue()) {
+            setComputeResult(mResult.getValue());
+        }
     }
 
 
@@ -122,11 +133,9 @@ public class CalculatorActivity extends Activity {
                     Toast.makeText(CalculatorActivity.this, R.string.msg_illegal_operation, Toast.LENGTH_SHORT)
                             .show();
                 } else {
-                    String result = getString(
-                            R.string.result_format,
-                            operator.compute(getDouble(mOperand1View), getDouble(mOperand2View))
-                    );
-                    mResultView.setText(result);
+                    double computeResult = operator.compute(getDouble(mOperand1View), getDouble(mOperand2View));
+                    mResult = OptDouble.of(computeResult);
+                    setComputeResult(computeResult);
                     animateShow();
                 }
             } catch (IllegalArgumentException e) {
@@ -172,5 +181,9 @@ public class CalculatorActivity extends Activity {
                 mResultView.setText(null);
             }
         }
+    }
+
+    private void setComputeResult(double result) {
+        mResultView.setText(getString(R.string.result_format, result));
     }
 }
