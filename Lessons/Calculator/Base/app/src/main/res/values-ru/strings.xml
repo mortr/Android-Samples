@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Калькулятор</string>
+    <string name="sum">Сумма</string>
+    <string name="subtraction">Вычитание</string>
+    <string name="multiply">Умножение</string>
+    <string name="division">Деление</string>
+    <string name="operations">Операции</string>
+    <string name="compute">Вычислить</string>
+    <string name="result_format">Результат: %.2f</string>
+    <string name="operand_hint">Операнд</string>
+    <string name="msg_illegal_operand">Недопустимые операнды</string>
+    <string name="msg_operator_not_select">Выберите операцию</string>
+    <string name="msg_illegal_operation">Выберите операцию</string>
+</resources>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_padding"
+    android:orientation="vertical"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:overScrollMode="ifContentScrolls"
+        tools:context=".CalculatorActivity"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <EditText
+                    android:id="@+id/operand1"
+                    style="@style/Widget.Calculator.Operand"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    />
+
+                <EditText
+                    android:id="@+id/operand2"
+                    style="@style/Widget.Calculator.Operand"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    />
+
+            </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/operators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                >
+
+                <RadioButton
+                    android:id="@+id/operator_sum"
+                    style="@style/Widget.Calculator.Operator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sum"
+                    />
+
+                <RadioButton
+                    android:id="@+id/operator_subtraction"
+                    style="@style/Widget.Calculator.Operator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/subtraction"
+                    />
+
+                <RadioButton
+                    android:id="@+id/operator_multiply"
+                    style="@style/Widget.Calculator.Operator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/multiply"
+                    />
+
+                <RadioButton
+                    android:id="@+id/operator_division"
+                    style="@style/Widget.Calculator.Operator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/division"
+                    />
+
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/result"
+        style="@style/Widget.Calculator.Result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/result_format"
+        />
+
+    <Button
+        android:id="@+id/compute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/compute"
+        />
+</LinearLayout>
