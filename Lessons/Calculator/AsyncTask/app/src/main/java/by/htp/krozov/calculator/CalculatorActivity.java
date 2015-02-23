@@ -3,6 +3,7 @@ package by.htp.krozov.calculator;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,8 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import junit.framework.Assert;
 
 /**
  * @author Kirill Rozov
@@ -36,6 +39,8 @@ public class CalculatorActivity extends Activity {
 
     private OptDouble mResult;
 
+    private OnComputeClickListener.ComputeAsyncTask mComputeAsyncTask;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,25 +61,6 @@ public class CalculatorActivity extends Activity {
 
         // Кнопке "Вычислить" задаётся слушатель
         findViewById(R.id.compute).setOnClickListener(new OnComputeClickListener());
-    }
-
-    /**
-     * Парсинг числа с плавающей точкой из TextView.
-     *
-     * @throws java.lang.IllegalArgumentException Происходит в случае если строка,
-     *                                            из которой партится число, имеет недопустимый формат.
-     */
-    private static double getDouble(TextView textView) {
-        CharSequence text = textView.getText();
-        if (TextUtils.isEmpty(text)) {
-            throw new IllegalArgumentException();
-        } else {
-            try {
-                return Double.parseDouble(text.toString());
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
     }
 
     /**
@@ -120,6 +106,10 @@ public class CalculatorActivity extends Activity {
         }
     }
 
+    private void setComputeResult(double result) {
+        mResultView.setText(getString(R.string.result_format, result));
+    }
+
 
     /**
      * Слушатель нажатия на кнопку "Вычислить".
@@ -127,26 +117,13 @@ public class CalculatorActivity extends Activity {
     private class OnComputeClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            try {
-                Computable operator = getOperatorById();
-                if (operator == null) { // Оператора не выбран
-                    Toast.makeText(CalculatorActivity.this, R.string.msg_illegal_operation, Toast.LENGTH_SHORT)
-                            .show();
-                } else {
-                    double computeResult = operator.compute(getDouble(mOperand1View), getDouble(mOperand2View));
-                    mResult = OptDouble.of(computeResult);
-                    setComputeResult(computeResult);
-                    animateShow();
-                }
-            } catch (IllegalArgumentException e) {
-                // Происходит в случае если введены недопустимые аргументы для вычислений, например
-                // пустая строка или недопустимый формат данных.
-                if (!TextUtils.isEmpty(mResultView.getText())) {
-                    animateHide();
-                }
-                Toast.makeText(
-                        CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT
-                ).show();
+            Computable operator = getOperatorById();
+            if (operator == null) { // Оператора не выбран
+                Toast.makeText(CalculatorActivity.this, R.string.msg_illegal_operation, Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                new ComputeAsyncTask(mOperand1View.getText(), mOperand2View.getText())
+                        .execute(operator);
             }
         }
 
@@ -181,9 +158,67 @@ public class CalculatorActivity extends Activity {
                 mResultView.setText(null);
             }
         }
-    }
 
-    private void setComputeResult(double result) {
-        mResultView.setText(getString(R.string.result_format, result));
+        private class ComputeAsyncTask extends AsyncTask<Computable, Float, Double> {
+            private final CharSequence mOperand1;
+            private final CharSequence mOperand2;
+
+            private ComputeAsyncTask(CharSequence operand1, CharSequence operand2) {
+                mOperand1 = operand1;
+                mOperand2 = operand2;
+            }
+
+            /**
+             * Парсинг числа с плавающей точкой из TextView.
+             *
+             * @throws java.lang.IllegalArgumentException Происходит в случае если строка,
+             *                                            из которой партится число, имеет недопустимый формат.
+             */
+            private double getDouble(CharSequence text) {
+                if (TextUtils.isEmpty(text)) {
+                    throw new IllegalArgumentException();
+                } else {
+                    try {
+                        return Double.parseDouble(text.toString());
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                }
+            }
+
+            @Override
+            protected Double doInBackground(Computable... params) {
+                // Производим вычисления. Никаких модификаций UI в методе doInBackground()
+                // не производится. Все отображение делаем в onPostExecute()
+                Assert.assertEquals("Params length must be not null", 1, params.length);
+                try {
+                    final double result =
+                            params[0].compute(getDouble(mOperand1), getDouble(mOperand2));
+                    return isCancelled() ? null : result;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Double result) {
+                if (result != null) {
+                    mResult = OptDouble.of(result);
+                    setComputeResult(result);
+                    animateShow();
+                } else {
+                    mResult = OptDouble.of();
+                    // Происходит в случае если введены недопустимые аргументы для вычислений, например
+                    // пустая строка или недопустимый формат данных.
+                    if (!TextUtils.isEmpty(mResultView.getText())) {
+                        animateHide();
+                    }
+                    Toast.makeText(
+                            CalculatorActivity.this, R.string.msg_illegal_operand, Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+        }
     }
 }
