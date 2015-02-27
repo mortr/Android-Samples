@@ -24,7 +24,6 @@ public class GitHubServiceHolder {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-            mapper.configure(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY, false);
             mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 
             // Изменяем конвертер данных в объекты

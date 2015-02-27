@@ -56,7 +56,6 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onLoaderReset(Loader<List<Repo>> loader) {
-
     }
 
     private static class RepoAdapter extends ArrayAdapter<Repo> {
@@ -93,11 +92,11 @@ public class MainActivity extends ActionBarActivity
     }
 
     /**
-     * Loader для загрузки списка репозиторие из сети
+     * Loader для загрузки списка репозиторие из сети.
      */
     private static class RepoLoader extends SimpleAsyncTaskLoader<List<Repo>> {
 
-        private String mUser;
+        private final String mUser;
 
         private RepoLoader(Context context, String user) {
             super(context);
