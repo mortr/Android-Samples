@@ -11,6 +11,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +52,7 @@ public class MainActivity extends ActionBarActivity
         if (NetworkUtils.hasInterneConnection(this)) {
             loadRepos();
         } else {
+            Toast.makeText(this, R.string.no_network, Toast.LENGTH_SHORT).show();
             mNetworkStateReceiver = new NetworkStateBroadcastReceiver();
             registerReceiver(mNetworkStateReceiver, NETWORK_STATE_INTENT_FILTER);
         }
