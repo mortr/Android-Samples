@@ -46,8 +46,8 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
 
         if (NetworkUtils.hasInterneConnection(this)) {
             loadRepos();
@@ -59,10 +59,9 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    protected void onPause() {
+    protected void onStop() {
         unregisterNetworkStateReceiver();
-
-        super.onPause();
+        super.onStop();
     }
 
     private void unregisterNetworkStateReceiver() {
