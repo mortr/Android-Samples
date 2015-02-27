@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">GitHub Client</string>
     <string name="no_network">No network connection</string>
+    <string name="reload">Reload</string>
 </resources>

@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -64,6 +66,37 @@ public class MainActivity extends ActionBarActivity
         super.onStop();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_refresh:
+                setProgressVisible(true);
+                getSupportLoaderManager()
+                        .restartLoader(REPO_LOADER_ID, null, this);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void setProgressVisible(boolean visible) {
+        if (visible) {
+            mProgressView.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.GONE);
+        } else {
+            mProgressView.setVisibility(View.GONE);
+            mListView.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void unregisterNetworkStateReceiver() {
         if (mNetworkStateReceiver != null) {
             unregisterReceiver(mNetworkStateReceiver);
@@ -72,7 +105,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     void loadRepos() {
-        mProgressView.setVisibility(View.VISIBLE);
+        setProgressVisible(true);
         getSupportLoaderManager().initLoader(REPO_LOADER_ID, null, this);
     }
 
@@ -92,8 +125,8 @@ public class MainActivity extends ActionBarActivity
     public void onLoadFinished(Loader<List<Repo>> loader, List<Repo> data) {
         switch (loader.getId()) {
             case REPO_LOADER_ID:
-                mProgressView.setVisibility(View.GONE);
                 mListView.setAdapter(new RepoAdapter(this, data));
+                setProgressVisible(false);
                 break;
         }
     }
