@@ -1,104 +1,114 @@
 package by.htp.krozov.android.sample.githubclient;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
 
 import by.htp.krozov.android.sample.githubclient.model.Repo;
 import by.htp.krozov.android.sample.githubclient.networking.GitHubServiceHolder;
-import retrofit.RestAdapter;
 
 
 public class MainActivity extends ActionBarActivity
         implements LoaderManager.LoaderCallbacks<List<Repo>> {
 
+    private static final int REPO_LOADER_ID = 100;
+    private static final IntentFilter NETWORK_STATE_INTENT_FILTER
+            = new IntentFilter();
+
+    static {
+        NETWORK_STATE_INTENT_FILTER.addAction(
+                ConnectivityManager.CONNECTIVITY_ACTION);
+    }
+
     private ListView mListView;
     private View mProgressView;
+    private NetworkStateBroadcastReceiver mNetworkStateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         mListView = (ListView) findViewById(android.R.id.list);
         mProgressView = findViewById(android.R.id.progress);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (NetworkUtils.hasInterneConnection(this)) {
+            loadRepos();
+        } else {
+            mNetworkStateReceiver = new NetworkStateBroadcastReceiver();
+            registerReceiver(mNetworkStateReceiver, NETWORK_STATE_INTENT_FILTER);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterNetworkStateReceiver();
+
+        super.onPause();
+    }
+
+    private void unregisterNetworkStateReceiver() {
+        if (mNetworkStateReceiver != null) {
+            unregisterReceiver(mNetworkStateReceiver);
+            mNetworkStateReceiver = null;
+        }
+    }
+
+    void loadRepos() {
         mProgressView.setVisibility(View.VISIBLE);
-        getSupportLoaderManager().initLoader(0, null, this);
+        getSupportLoaderManager().initLoader(REPO_LOADER_ID, null, this);
     }
 
     @Override
     public Loader<List<Repo>> onCreateLoader(int id, Bundle args) {
-        return new RepoLoader(this, "kirich1409");
+        switch (id) {
+            case REPO_LOADER_ID:
+                return new RepoLoader(this, "kirich1409");
+
+            default:
+                return null;
+        }
+
     }
 
     @Override
     public void onLoadFinished(Loader<List<Repo>> loader, List<Repo> data) {
-        mProgressView.setVisibility(View.GONE);
-        mListView.setAdapter(new RepoAdapter(this, data));
+        switch (loader.getId()) {
+            case REPO_LOADER_ID:
+                mProgressView.setVisibility(View.GONE);
+                mListView.setAdapter(new RepoAdapter(this, data));
+                break;
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<List<Repo>> loader) {
     }
 
-    private static class RepoAdapter extends ArrayAdapter<Repo> {
-        private RepoAdapter(Context context, List<Repo> objects) {
-            super(context, android.R.layout.simple_list_item_2, android.R.id.text1, objects);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = super.getView(position, convertView, parent);
-            ViewHolder viewHolder = (ViewHolder) view.getTag();
-            if (viewHolder == null) {
-                viewHolder = new ViewHolder(view);
-                view.setTag(viewHolder);
-            }
-            viewHolder.bind(getItem(position));
-            return view;
-        }
-
-        private static class ViewHolder {
-            private TextView mNameView;
-            private TextView mDescriptionView;
-
-            private ViewHolder(View itemVIew) {
-                mNameView = (TextView) itemVIew.findViewById(android.R.id.text1);
-                mDescriptionView = (TextView) itemVIew.findViewById(android.R.id.text2);
-            }
-
-            public void bind(Repo repo) {
-                mNameView.setText(repo.getName());
-                mDescriptionView.setText(repo.getDescription());
-            }
-        }
-    }
-
     /**
      * Loader для загрузки списка репозиторие из сети.
      */
-    private static class RepoLoader extends SimpleAsyncTaskLoader<List<Repo>> {
+    static class RepoLoader extends SimpleAsyncTaskLoader<List<Repo>> {
 
         private final String mUser;
 
-        private RepoLoader(Context context, String user) {
+        RepoLoader(Context context, String user) {
             super(context);
             mUser = user;
         }
@@ -109,6 +119,16 @@ public class MainActivity extends ActionBarActivity
                 return GitHubServiceHolder.getService().listRepos(mUser);
             } catch (Exception e) {
                 return Collections.emptyList();
+            }
+        }
+    }
+
+    class NetworkStateBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (NetworkUtils.hasInterneConnection(context)) {
+                unregisterNetworkStateReceiver();
+                loadRepos();
             }
         }
     }
