@@ -3,6 +3,11 @@ package by.htp.krozov.android.sample.githubclient.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
+ * Упрощенная модель Repository объекта Github.
+ *
+ * Настройка игнорирования полей происходит в
+ * {@link by.htp.krozov.android.sample.githubclient.networking.GitHubServiceHolder}
+ *
  * @author Kirill Rozov
  * @since 26.02.15.
  */

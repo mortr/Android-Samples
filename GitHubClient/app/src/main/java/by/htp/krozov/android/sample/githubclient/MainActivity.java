@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
@@ -25,14 +26,28 @@ import by.htp.krozov.android.sample.githubclient.networking.GitHubServiceHolder;
 public class MainActivity extends ActionBarActivity
         implements LoaderManager.LoaderCallbacks<List<Repo>> {
 
+    private static final String STATE_REPOS_LOADED = "reposLoaded";
+
+    // ID Loader для загрузки списка репозиториев
     private static final int REPO_LOADER_ID = 100;
+
+    // IntentFilter изменения состояния сети
     private static final IntentFilter NETWORK_STATE_INTENT_FILTER
             = new IntentFilter();
 
     static {
+        // Инициализация NETWORK_STATE_INTENT_FILTER
+        // Задаем action при изменение состояния сети
         NETWORK_STATE_INTENT_FILTER.addAction(
                 ConnectivityManager.CONNECTIVITY_ACTION);
     }
+
+    public static final String GITHUB_USERNAME = "kirich1409";
+
+    /**
+     * Флаг об том был ли загружены репозитории
+     */
+    private boolean mReposLoaded;
 
     private ListView mListView;
     private View mProgressView;
@@ -48,12 +63,24 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mReposLoaded = savedInstanceState.getBoolean(STATE_REPOS_LOADED, false);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
 
-        if (NetworkUtils.hasInterneConnection(this)) {
+        // При каждом показе Activity на экране запускаем загрузку списка репозиториев
+
+
+        // Загружаем список репозиторие только в случае если он еще не был успешно загружен либо
+        // не был загружен и есть сетевое подключение
+        if (mReposLoaded || NetworkUtils.hasInternetConnection(this)) {
             loadRepos();
         } else {
+            // Регистрируем BroadcastReceiver для наблюдением за измнением состояния сети
             Toast.makeText(this, R.string.no_network, Toast.LENGTH_SHORT).show();
             mNetworkStateReceiver = new NetworkStateBroadcastReceiver();
             registerReceiver(mNetworkStateReceiver, NETWORK_STATE_INTENT_FILTER);
@@ -62,6 +89,8 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     protected void onStop() {
+        // При скрытие Activity с экрана отписываемся от событий изменения состояния сети
+        // В противном случае мы можем получить Memory Leak
         unregisterNetworkStateReceiver();
         super.onStop();
     }
@@ -77,6 +106,7 @@ public class MainActivity extends ActionBarActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
+                mReposLoaded = false;
                 setProgressVisible(true);
                 getSupportLoaderManager()
                         .restartLoader(REPO_LOADER_ID, null, this);
@@ -87,6 +117,15 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_REPOS_LOADED, mReposLoaded);
+    }
+
+    /**
+     * Отображаем прогресс. Одновременно может быть виден только спиоск репозиторие либо прогресс.
+     */
     private void setProgressVisible(boolean visible) {
         if (visible) {
             mProgressView.setVisibility(View.VISIBLE);
@@ -97,6 +136,9 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+    /**
+     * Отмена регистрации BroadcastReceiver и его уничтожение.
+     */
     private void unregisterNetworkStateReceiver() {
         if (mNetworkStateReceiver != null) {
             unregisterReceiver(mNetworkStateReceiver);
@@ -113,7 +155,7 @@ public class MainActivity extends ActionBarActivity
     public Loader<List<Repo>> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case REPO_LOADER_ID:
-                return new RepoLoader(this, "kirich1409");
+                return new RepoLoader(this, GITHUB_USERNAME);
 
             default:
                 return null;
@@ -127,6 +169,7 @@ public class MainActivity extends ActionBarActivity
             case REPO_LOADER_ID:
                 mListView.setAdapter(new RepoAdapter(this, data));
                 setProgressVisible(false);
+                mReposLoaded = true;
                 break;
         }
     }
@@ -160,7 +203,8 @@ public class MainActivity extends ActionBarActivity
     class NetworkStateBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (NetworkUtils.hasInterneConnection(context)) {
+            // При уведомление об имзенение состояния сети, необходимо проверить есть ли активное соединиение.
+            if (NetworkUtils.hasInternetConnection(context)) {
                 unregisterNetworkStateReceiver();
                 loadRepos();
             }

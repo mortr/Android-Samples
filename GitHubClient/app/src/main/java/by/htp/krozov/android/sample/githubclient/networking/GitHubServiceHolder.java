@@ -21,6 +21,7 @@ public class GitHubServiceHolder {
             RestAdapter.Builder builder = new RestAdapter.Builder();
             builder.setEndpoint(GITHUB_ENDPOINT);
 
+            // Конфигурирования десериалиазции объектов.
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
