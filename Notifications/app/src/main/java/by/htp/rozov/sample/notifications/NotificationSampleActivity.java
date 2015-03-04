@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import by.htp.rozov.sample.notifications.item.ActionNotifyItem;
 import by.htp.rozov.sample.notifications.item.DeterminateNotify;
 import by.htp.rozov.sample.notifications.item.IndeterminateNotify;
 import by.htp.rozov.sample.notifications.item.NotifyItem;
@@ -24,7 +25,8 @@ public class NotificationSampleActivity extends ListActivity {
             new SimpleNotify(),
             new SimpleNotifyWithVibrate(),
             new IndeterminateNotify(),
-            new DeterminateNotify()
+            new DeterminateNotify(),
+            new ActionNotifyItem()
     };
 
     @Override
