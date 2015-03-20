@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">User Words Dispalying</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">User Dictionary</string>
+    <string name="user_dictionary_empty">User Dictionary is empty</string>
 </resources>

@@ -2,6 +2,7 @@ package com.htp.krozov.userwordsdispalying;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.UserDictionary;
 import android.support.v4.app.ListFragment;
@@ -35,6 +36,7 @@ public class UserWordsFragment extends ListFragment implements LoaderManager.Loa
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setEmptyText(getText(R.string.user_dictionary_empty));
         getLoaderManager().initLoader(LOADER_ID_USER_WORDS, null, this);
     }
 
@@ -59,7 +61,7 @@ public class UserWordsFragment extends ListFragment implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (isAdded()) {
+        if (getView() != null) {
             setListShown(false);
             setListAdapter(null);
         }
@@ -67,14 +69,14 @@ public class UserWordsFragment extends ListFragment implements LoaderManager.Loa
 
     private static class UserWordsLoader extends CursorLoader {
 
-        private static final String[] PROJECTION =
-                {UserDictionary.Words._ID, UserDictionary.Words.WORD};
+        private static final Uri CONTENT_URI = UserDictionary.Words.CONTENT_URI;
+        private static final String[] PROJECTION = {UserDictionary.Words._ID, UserDictionary.Words.WORD};
         private static final String SELECTION = null;
         private static final String[] SELECTION_ARGS = null;
         private static final String SORT_ORDER = UserDictionary.Words.WORD + " ASC";
 
         private UserWordsLoader(Context context) {
-            super(context, UserDictionary.Words.CONTENT_URI,
+            super(context, CONTENT_URI,
                     PROJECTION, SELECTION, SELECTION_ARGS, SORT_ORDER);
         }
 
