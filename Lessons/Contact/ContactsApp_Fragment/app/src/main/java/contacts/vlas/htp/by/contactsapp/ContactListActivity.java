@@ -1,9 +1,11 @@
 package contacts.vlas.htp.by.contactsapp;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.widget.ListView;
 
 import contacts.vlas.htp.by.contactsapp.model.Contact;
@@ -31,6 +33,27 @@ public class ContactListActivity extends FragmentActivity
             ContactListFragment contactListFragment
                     = (ContactListFragment) fm.findFragmentById(R.id.contact_list_fragment);
             contactListFragment.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+            SlidingPaneLayout slidingPaneLayout =
+                    (SlidingPaneLayout) findViewById(R.id.sliding_panel);
+            if (slidingPaneLayout != null) {
+                slidingPaneLayout.setShadowResourceLeft(R.drawable.sliding_pane_shadow);
+            }
+            if (slidingPaneLayout != null
+                    && slidingPaneLayout.isSlideable()
+                    && fm.findFragmentByTag(TAG_CONTACT_FRAGMENT) == null) {
+                slidingPaneLayout.openPane();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SlidingPaneLayout slidingPaneLayout = (SlidingPaneLayout) findViewById(R.id.sliding_panel);
+        if (slidingPaneLayout != null) {
+            slidingPaneLayout.setShadowResourceLeft(R.drawable.sliding_pane_shadow);
         }
     }
 
@@ -39,7 +62,6 @@ public class ContactListActivity extends FragmentActivity
         if (mDualPane) {
             ContactFragment contactFragment = ContactFragment.newInstance(contact);
             getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .replace(R.id.contact_fragment_container, contactFragment, TAG_CONTACT_FRAGMENT)
                     .commit();
         } else {

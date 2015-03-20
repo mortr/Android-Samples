@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment
-    android:name="contacts.vlas.htp.by.contactsapp.ContactListFragment"
+<FrameLayout
+    style="@style/ContactList"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/contact_list_fragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    />
+    >
+
+    <fragment
+        android:id="@+id/contact_list_fragment"
+        android:name="contacts.vlas.htp.by.contactsapp.ContactListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+</FrameLayout>

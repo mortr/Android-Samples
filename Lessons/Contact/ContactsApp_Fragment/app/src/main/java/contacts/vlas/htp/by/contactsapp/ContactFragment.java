@@ -77,6 +77,10 @@ public class ContactFragment extends Fragment {
         mOccupationView.setText(mContact.getOccupation());
     }
 
+    public Contact getContact() {
+        return mContact;
+    }
+
     @Override
     public void onDestroyView() {
         ButterKnife.reset(this);

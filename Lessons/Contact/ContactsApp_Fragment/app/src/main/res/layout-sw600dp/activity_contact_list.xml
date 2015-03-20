@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v4.widget.SlidingPaneLayout
+    android:id="@+id/sliding_panel"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:baselineAligned="false"
     android:orientation="horizontal"
     >
 
-    <fragment
-        android:id="@+id/contact_list_fragment"
-        android:name="contacts.vlas.htp.by.contactsapp.ContactListFragment"
+    <FrameLayout
+        style="@style/ContactList"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:layout="@android:layout/list_content"
-        />
+        >
+
+        <fragment
+            android:id="@+id/contact_list_fragment"
+            android:name="contacts.vlas.htp.by.contactsapp.ContactListFragment"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@android:layout/list_content"
+            />
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/contact_fragment_container"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        style="@style/ContactContainer"
         />
 
-</LinearLayout>
+</android.support.v4.widget.SlidingPaneLayout>
